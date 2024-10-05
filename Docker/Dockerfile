@@ -12,15 +12,18 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the application code
 COPY . .
+COPY models/ /app/models/
+
 
 # Expose the port that FastAPI runs on
 EXPOSE 8000
 
 # Command to run the FastAPI app
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+CMD ["uvicorn", "fastapi_deployment.app:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
 
 
 # docker build -f Docker/Dockerfile -t my-fastapi-app .
 # docker run -d -p 8000:8000 my-fastapi-app
 # netstat -ano --> fot listing the port numbers
 # taskkill /PID 19160 /F --> for killing the process, give the PID number of the port number
+# docker run -it --entrypoint /bin/bash my-fastapi-app

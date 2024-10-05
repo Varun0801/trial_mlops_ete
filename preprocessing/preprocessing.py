@@ -2,9 +2,13 @@
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 import pandas as pd
 import joblib
+import os
 
 def preprocess_data():
     try:
+        root_dir = os.path.dirname(os.path.abspath(__file__))
+        model_dir = os.path.join(root_dir, '../models')
+
         df = pd.read_csv('iris.csv')
         
         # Drop target column for feature scaling
@@ -20,8 +24,8 @@ def preprocess_data():
         y_encoded = le.fit_transform(y)
         
         # Save preprocessors
-        joblib.dump(scaler, 'scaler.joblib')
-        joblib.dump(le, 'label_encoder.joblib')
+        joblib.dump(scaler, f'{model_dir}/scaler.joblib')
+        joblib.dump(le, f'{model_dir}/label_encoder.joblib')
         
         pd.DataFrame(X_scaled, columns=df.columns[:-1]).to_csv('iris_preprocessed.csv', index=False)
         pd.DataFrame(y_encoded, columns=['target']).to_csv('iris_target.csv', index=False)
