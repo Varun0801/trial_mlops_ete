@@ -1,2 +1,17 @@
 # Ignore virtual environment folder
 .venv/
+# Ignore the local settings file
+.vscode/
+# Ignore the pytest cache folder
+.pytest_cache/
+# Ignore the Python cache
+*__pycache__
+# ini files
+*__init__.py
+# Ignore the Python compiled files
+*.pyc
+# Ignore the Python optimized files
+*.pyo
+# Ignore the Python dynamic libraries
+*.pyd
+*__pycache__/

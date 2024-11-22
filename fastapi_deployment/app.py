@@ -44,14 +44,17 @@ async def read_index():
 async def predict(request: Request):
     try:
         data = await request.json()
+        print(f"input_data: {data}")
+        # Process the key, value pairs coming from API request
+        if 'data' not in data.keys():
+            data = {'data': data.values()}
         data_df = pd.DataFrame([data['data']], columns=['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)'])
-        
+        print(f"data_df: {data_df}")
         # Apply the same scaling and encoding as in training
         scaled_data = scaler.transform(data_df)
-        
+        print(scaled_data)
         # Make prediction
         prediction = model.predict(scaled_data)
-        
         # Convert label back to original form if necessary
         original_label = label_encoder.inverse_transform(prediction)
         logging.info(f"Predicted class: {prediction}")
@@ -61,5 +64,5 @@ async def predict(request: Request):
         print(f"An error occurred during prediction from endpoint: {e}")
 
 
-# Run this with: uvicorn fastapi_deployment.app:app --host 0.0.0.0 --port 8000
+# Run this with: uvicorn fastapi_deployment.app:app --host 0.0.0.0 --port 8000 --reload
 
