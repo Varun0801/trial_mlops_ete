@@ -4,11 +4,17 @@ import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
 import joblib
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 def tune_hyperparameters():
     try:
-        X = pd.read_csv('iris_preprocessed.csv')
-        y = pd.read_csv('iris_target.csv').values.ravel()
+        X = pd.read_csv('data/train_preprocessed.csv')
+        y = pd.read_csv('data/train_target.csv').values.ravel()
+
+        X_val = pd.read_csv('data/validation_preprocessed.csv')
+        y_val = pd.read_csv('data/validation_target.csv').values.ravel()
         
         # RandomForest Model Hyperparameter Tuning
         rf = RandomForestClassifier()
@@ -33,16 +39,21 @@ def tune_hyperparameters():
         # Compare both models
         if rf_grid_search.best_score_ > svm_grid_search.best_score_:
             best_model = rf_grid_search.best_estimator_
-            print(f"Best model is RandomForest with params: {rf_grid_search.best_params_} and score: {rf_grid_search.best_score_}")
+            logger.info(f"Best model is RandomForest with params: {rf_grid_search.best_params_} and score: {rf_grid_search.best_score_}")
         else:
             best_model = svm_grid_search.best_estimator_
-            print(f"Best model is SVM with params: {svm_grid_search.best_params_} and score: {svm_grid_search.best_score_}")
+            logger.info(f"Best model is SVM with params: {svm_grid_search.best_params_} and score: {svm_grid_search.best_score_}")
         
+        # Evaluate on validation set
+        val_accuracy = best_model.score(X_val, y_val)
+        logger.info(f"Validation Accuracy: {val_accuracy:.2f}")
+
         # Save the best model
         joblib.dump(best_model, 'models/best_model.joblib')
-        print("Best model saved!")
+        logger.info("Best model saved!")
+
     except Exception as e:
-        print(f"Error at hyperparameter tuning step: {e}")
+        logger.info(f"Error at hyperparameter tuning step: {e}")
 
 if __name__ == '__main__':
     tune_hyperparameters()
